@@ -1,4 +1,4 @@
-# Suitability Modelling Workflow African Swine Fever in the Philippines
+# Suitability Modelling Workflow for African Swine Fever in the Philippines
 
 ## Overview
 
@@ -17,8 +17,8 @@ The analysis has been developed with reproducibility in mind. Package versions a
 ├── data/                      # Input datasets
 │   └── folds/                 # Cross-validation fold datasets
 ├── scripts/
+│   └── ArcPy/                 # ArcGIS Pro data preprocessing scripts
 │   └── R/                     # Stand-alone utility R scripts
-│   └── ArcPy/                 # ArcPy scripts for data processing
 ├── outputs/                   # Analysis outputs (directory created during execution)
 ├── index.html				   # Interactive suitability map widget published as GitHub Pages
 ├── renv/                      # renv project infrastructure
@@ -27,6 +27,7 @@ The analysis has been developed with reproducibility in mind. Package versions a
 ├── asf-ph-suitability.Rproj   # RStudio project
 └── README.md
 ```
+
 # Reproducibility
 
 This project uses the **renv** package to manage package versions.
@@ -48,6 +49,8 @@ renv::restore()
 ```
 
 This installs the package versions recorded in `renv.lock`.
+
+All required R packages should be installed automatically.
 
 ---
 
@@ -79,17 +82,17 @@ These datasets are generated using `scripts/R/data_split_for_cv.R`.
 
 ---
 
-# Notes
+# Important
 
 * Predictor removal following multicollinearity assessment is **not fully automated**. Variables removed after the multicollinearity analysis are manually selected based on researcher judgement and are intentionally hard-coded to ensure reproducibility of the published analysis.
 * The final model configuration is **not selected automatically**. The model type and hyperparameter settings are manually specified based on the cross-validation results to reproduce the final model reported in the associated manuscript.
-* Cross-validation fold assignments are fixed to ensure consistent model comparisons.
+* For maximum reproducibility, cores is set to 1 by default; however, this substantially increases computation time. Users may increase the number of cores, as appropriate for their computing environment, to reduce analysis runtime.
 * Random number generation is controlled using fixed seeds to maximise reproducibility.
 
 ---
 
 
-### Main pipeline
+## Main pipeline
 
 The primary workflow is executed from:
 
@@ -145,7 +148,7 @@ These scripts are intended to be sourced automatically by `main.R` and generally
 
 ---
 
-## Stand-alone scripts (`scripts/R/`)
+## Stand-alone R scripts (`scripts/R/`)
 
 Several analyses are intentionally separated from the main workflow because they either prepare shared inputs or generate post-processing outputs used in the manuscript.
 
@@ -179,7 +182,7 @@ Ranks variables by importance within each fold, then summarises the mean and SD 
 
 ### `characterise_predicted_suitable_areas.R`
 
-Conducts the four-step analyses to characterise predicted suitable areas:
+Conducts the four-step analyses to characterise predicted suitable areas, as presented in Supplementary File S4:
 1. EDA: boxplot comparison of predictors and suitability scores, suitable vs unsuitable areas
 2. One-dimensional partial dependence plots for each influential predictor
 3. Pairwise interaction partial dependence plots (heatmaps) with Friedman's H interaction-strength statistic
@@ -194,21 +197,19 @@ Builds an interactive Leaflet map of the final model predictions.
 
 ---
 
-# Software requirements
+## Data preprocessing scripts (`scripts/ArcPy/`)
 
-The workflow has been developed in R.
+Data preprocessing performed in ArcGIS Pro was supported by ArcPy scripts.
 
-Package versions are managed through `renv`.
+The scripts correspond to the preparation of the climatic, land cover, livestock and demographic, population, and poverty incidence predictor datasets:
 
-After running:
+1_climatic.py
+2_land_cover.py
+3_livestock_demographic.py
+4_population.py
+5_poverty_incidence.py
 
-```r
-renv::restore()
-```
-
-all required R packages should be installed automatically.
-
----
+These scripts are intended to be run within an ArcGIS Pro project using its Python/ArcPy environment.
 
 # Citation
 
@@ -218,18 +219,12 @@ If you use this code, please cite:
 
 ---
 
-# License
-
-Specify the licence under which this repository is distributed (e.g., MIT License or GPL-3.0).
-
----
-
 # Contact
 
 For questions regarding the code or the associated manuscript, please contact:
 
-**<Name>**
+**Kim Dianne Ligue-Sabio**
 
-**<Institution>**
+**The University of Queensland, University of the Philippines Mindanao**
 
-**<Email>**
+**k.ligue@uq.edu.au; kbligue@up.edu.ph**
